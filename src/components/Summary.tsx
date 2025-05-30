@@ -1,10 +1,13 @@
 import { useMemo } from 'react';
 import { 
-  Box, Typography, Paper, Table, TableBody, 
-  TableCell, TableContainer, TableHead, TableRow, 
-  Button 
+  Box, Typography, Table, TableBody, 
+  TableCell, TableContainer, TableHead, TableRow
 } from '@mui/material';
 import type { Player, Game, Transaction } from '../types';
+import { AppHeader } from './AppHeader';
+import { StyledCard } from './StyledCard';
+import { StyledButton } from './StyledButton';
+import { GiCoins, GiMoneyStack, GiSpades } from 'react-icons/gi';
 
 interface SummaryProps {
   players: Player[];
@@ -92,33 +95,51 @@ export const Summary = ({ players, games, onBack, onReset }: SummaryProps) => {
 
   return (
     <Box sx={{ maxWidth: 800, mx: 'auto', p: 2 }}>
-      <Typography variant="h4" gutterBottom>
-        Poker Pool Summary
-      </Typography>
+      <AppHeader title="Poker Pool Summary" />
 
-      <Paper elevation={2} sx={{ p: 2, mb: 3 }}>
-        <Typography variant="h6" gutterBottom>
-          Player Balances
+      <StyledCard>
+        <Typography variant="h6" gutterBottom sx={{ 
+          color: 'white', 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 1 
+        }}>
+          <GiMoneyStack /> Player Balances
         </Typography>
         <TableContainer>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Player</TableCell>
-                <TableCell align="right">Balance</TableCell>
-                <TableCell>Status</TableCell>
+                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Player</TableCell>
+                <TableCell align="right" sx={{ color: 'white', fontWeight: 'bold' }}>Balance</TableCell>
+                <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {updatedPlayers.map((player) => (
-                <TableRow key={player.id}>
-                  <TableCell>{player.name}</TableCell>
-                  <TableCell align="right">{formatMoney(player.balance)}</TableCell>
+                <TableRow 
+                  key={player.id}
+                  sx={{
+                    '&:nth-of-type(odd)': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    },
+                    '&:last-child td, &:last-child th': {
+                      border: 0,
+                    },
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    },
+                  }}
+                >
+                  <TableCell sx={{ color: 'white' }}>{player.name}</TableCell>
+                  <TableCell align="right" sx={{ color: 'white' }}>{formatMoney(player.balance)}</TableCell>
                   <TableCell>
                     {player.balance > 0 
-                      ? <Typography color="success.main">Winning</Typography> 
+                      ? <Typography color="#4caf50" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <GiCoins /> Winning
+                        </Typography> 
                       : player.balance < 0 
-                        ? <Typography color="error.main">Owes Money</Typography>
+                        ? <Typography color="#f44336" sx={{ fontWeight: 'bold' }}>Owes Money</Typography>
                         : <Typography color="text.secondary">Break Even</Typography>
                     }
                   </TableCell>
@@ -127,11 +148,16 @@ export const Summary = ({ players, games, onBack, onReset }: SummaryProps) => {
             </TableBody>
           </Table>
         </TableContainer>
-      </Paper>
+      </StyledCard>
 
-      <Paper elevation={2} sx={{ p: 2, mb: 3 }}>
-        <Typography variant="h6" gutterBottom>
-          Settlement Plan
+      <StyledCard>
+        <Typography variant="h6" gutterBottom sx={{ 
+          color: 'white', 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 1 
+        }}>
+          <GiSpades /> Settlement Plan
         </Typography>
         
         {settlements.length > 0 ? (
@@ -139,34 +165,47 @@ export const Summary = ({ players, games, onBack, onReset }: SummaryProps) => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>From</TableCell>
-                  <TableCell>To</TableCell>
-                  <TableCell align="right">Amount</TableCell>
+                  <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>From</TableCell>
+                  <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>To</TableCell>
+                  <TableCell align="right" sx={{ color: 'white', fontWeight: 'bold' }}>Amount</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {settlements.map((transaction, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{getPlayerNameById(transaction.from)}</TableCell>
-                    <TableCell>{getPlayerNameById(transaction.to)}</TableCell>
-                    <TableCell align="right">{formatMoney(transaction.amount)}</TableCell>
+                  <TableRow 
+                    key={index}
+                    sx={{
+                      '&:nth-of-type(odd)': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                      },
+                      '&:last-child td, &:last-child th': {
+                        border: 0,
+                      },
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                      },
+                    }}
+                  >
+                    <TableCell sx={{ color: 'white' }}>{getPlayerNameById(transaction.from)}</TableCell>
+                    <TableCell sx={{ color: 'white' }}>{getPlayerNameById(transaction.to)}</TableCell>
+                    <TableCell align="right" sx={{ color: 'white' }}>{formatMoney(transaction.amount)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
         ) : (
-          <Typography>No settlements needed. Everyone is even!</Typography>
+          <Typography sx={{ color: 'white' }}>No settlements needed. Everyone is even!</Typography>
         )}
-      </Paper>
+      </StyledCard>
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-        <Button variant="outlined" onClick={onBack}>
+        <StyledButton variant="outlined" onClick={onBack} color="secondary">
           Back to Games
-        </Button>
-        <Button variant="contained" color="error" onClick={onReset}>
+        </StyledButton>
+        <StyledButton variant="contained" color="error" onClick={onReset}>
           Reset All
-        </Button>
+        </StyledButton>
       </Box>
     </Box>
   );

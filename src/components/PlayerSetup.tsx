@@ -1,7 +1,11 @@
 import { useState } from 'react';
-import { TextField, Button, Typography, Box, List, ListItem, IconButton, Paper } from '@mui/material';
+import { TextField, Typography, Box, List, ListItem, IconButton } from '@mui/material';
 import type { Player } from '../types';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { StyledCard } from './StyledCard';
+import { AppHeader } from './AppHeader';
+import { StyledButton } from './StyledButton';
+import { GiEightBall } from 'react-icons/gi';
 
 interface PlayerSetupProps {
   players: Player[];
@@ -26,12 +30,10 @@ export const PlayerSetup = ({ players, onAddPlayer, onRemovePlayer, onContinue }
 
   return (
     <Box sx={{ maxWidth: 600, mx: 'auto', p: 2 }}>
-      <Typography variant="h4" gutterBottom>
-        Poker Pool Calculator - Player Setup
-      </Typography>
+      <AppHeader title="Poker Pool Calculator" />
       
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="body1" gutterBottom>
+      <StyledCard>
+        <Typography variant="body1" gutterBottom sx={{ color: 'white' }}>
           Enter the names of all players participating in the poker pool.
         </Typography>
         
@@ -42,47 +44,76 @@ export const PlayerSetup = ({ players, onAddPlayer, onRemovePlayer, onContinue }
             value={newPlayerName}
             onChange={(e) => setNewPlayerName(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleAddPlayer()}
+            variant="outlined"
+            sx={{ 
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: 'rgba(255, 255, 255, 0.23)',
+                },
+                '&:hover fieldset': {
+                  borderColor: 'rgba(255, 255, 255, 0.5)',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#4caf50',
+                },
+              },
+              '& .MuiInputLabel-root': {
+                color: 'rgba(255, 255, 255, 0.7)',
+              },
+              '& .MuiInputBase-input': {
+                color: 'white',
+              },
+            }}
           />
-          <Button variant="contained" onClick={handleAddPlayer}>
+          <StyledButton variant="contained" onClick={handleAddPlayer}>
             Add
-          </Button>
+          </StyledButton>
         </Box>
-      </Box>
+      </StyledCard>
       
       {players.length > 0 && (
-        <Paper elevation={2} sx={{ mb: 3, p: 2 }}>
-          <Typography variant="h6" gutterBottom>
-            Players ({players.length})
+        <StyledCard>
+          <Typography variant="h6" gutterBottom sx={{ color: 'white', display: 'flex', alignItems: 'center', gap: 1 }}>
+            <GiEightBall /> Players ({players.length})
           </Typography>
           <List>
             {players.map((player) => (
               <ListItem
                 key={player.id}
+                sx={{
+                  borderRadius: '4px',
+                  mb: 1,
+                  backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+                  },
+                }}
                 secondaryAction={
-                  <IconButton edge="end" onClick={() => onRemovePlayer(player.id)}>
+                  <IconButton edge="end" onClick={() => onRemovePlayer(player.id)} sx={{ color: 'rgba(255, 0, 0, 0.7)' }}>
                     <DeleteIcon />
                   </IconButton>
                 }
               >
-                <Typography>{player.name}</Typography>
+                <Typography sx={{ color: 'white' }}>{player.name}</Typography>
               </ListItem>
             ))}
           </List>
-        </Paper>
+        </StyledCard>
       )}
       
-      <Button
+      <StyledButton
         variant="contained"
         color="primary"
         disabled={players.length < 2}
         onClick={onContinue}
         fullWidth
+        sx={{ mt: 2 }}
       >
         Continue to Games
-      </Button>
+      </StyledButton>
       
       {players.length < 2 && (
-        <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+        <Typography variant="caption" color="error" sx={{ mt: 1, display: 'block', textAlign: 'center' }}>
           Add at least 2 players to continue
         </Typography>
       )}

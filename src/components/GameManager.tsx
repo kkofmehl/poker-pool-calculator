@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import { 
-  Box, Button, Typography, TextField, FormControl, 
-  InputLabel, Select, MenuItem, Paper, List, ListItem,
+  Box, Typography, TextField, FormControl, 
+  InputLabel, Select, MenuItem, List, ListItem,
   ListItemText, Divider
 } from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material';
 import type { Player, Game } from '../types';
+import { AppHeader } from './AppHeader';
+import { StyledCard } from './StyledCard';
+import { StyledButton } from './StyledButton';
+import { GiPokerHand, GiCardAceSpades } from 'react-icons/gi';
 
 interface GameManagerProps {
   players: Player[];
@@ -52,13 +56,16 @@ export const GameManager = ({
 
   return (
     <Box sx={{ maxWidth: 600, mx: 'auto', p: 2 }}>
-      <Typography variant="h4" gutterBottom>
-        Poker Pool Calculator - Games
-      </Typography>
+      <AppHeader title="Poker Pool Games" />
 
-      <Paper elevation={2} sx={{ p: 2, mb: 3 }}>
-        <Typography variant="h6" gutterBottom>
-          Add New Game
+      <StyledCard>
+        <Typography variant="h6" gutterBottom sx={{ 
+          color: 'white', 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 1 
+        }}>
+          <GiPokerHand /> Add New Game
         </Typography>
         
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mb: 2 }}>
@@ -69,15 +76,54 @@ export const GameManager = ({
             onChange={(e) => setWager(e.target.value)}
             InputProps={{ inputProps: { min: 0 } }}
             fullWidth
+            sx={{ 
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: 'rgba(255, 255, 255, 0.23)',
+                },
+                '&:hover fieldset': {
+                  borderColor: 'rgba(255, 255, 255, 0.5)',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#4caf50',
+                },
+              },
+              '& .MuiInputLabel-root': {
+                color: 'rgba(255, 255, 255, 0.7)',
+              },
+              '& .MuiInputBase-input': {
+                color: 'white',
+              },
+            }}
           />
           
           <FormControl fullWidth>
-            <InputLabel id="winner-select-label">Winner</InputLabel>
+            <InputLabel 
+              id="winner-select-label"
+              sx={{ color: 'rgba(255, 255, 255, 0.7)' }}
+            >
+              Winner
+            </InputLabel>
             <Select
               labelId="winner-select-label"
               value={winnerId}
               label="Winner"
               onChange={handleWinnerChange}
+              sx={{ 
+                color: 'white',
+                '.MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'rgba(255, 255, 255, 0.23)',
+                },
+                '&:hover .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'rgba(255, 255, 255, 0.5)',
+                },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#4caf50',
+                },
+                '.MuiSvgIcon-root': {
+                  color: 'white',
+                }
+              }}
             >
               {players.map((player) => (
                 <MenuItem key={player.id} value={player.id}>
@@ -87,48 +133,68 @@ export const GameManager = ({
             </Select>
           </FormControl>
           
-          <Button 
+          <StyledButton 
             variant="contained" 
             onClick={handleAddGame}
             disabled={!wager || !winnerId || isNaN(Number(wager)) || Number(wager) <= 0}
           >
             Add Game
-          </Button>
+          </StyledButton>
         </Box>
-      </Paper>
+      </StyledCard>
 
       {games.length > 0 && (
-        <Paper elevation={2} sx={{ p: 2, mb: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            Game History
+        <StyledCard>
+          <Typography variant="h6" gutterBottom sx={{ 
+            color: 'white', 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: 1 
+          }}>
+            <GiCardAceSpades /> Game History
           </Typography>
           <List>
             {games.map((game, index) => (
               <Box key={game.id}>
-                {index > 0 && <Divider />}
-                <ListItem>
+                {index > 0 && <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }} />}
+                <ListItem sx={{
+                  borderRadius: '4px',
+                  mb: 1,
+                  backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+                  },
+                }}>
                   <ListItemText
-                    primary={`Game ${index + 1}`}
-                    secondary={`Wager: $${game.wager.toFixed(2)} | Winner: ${getPlayerNameById(game.winnerId)} | ${new Date(game.date).toLocaleString()}`}
+                    primary={
+                      <Typography color="white">
+                        Game {index + 1}
+                      </Typography>
+                    }
+                    secondary={
+                      <Typography color="rgba(255, 255, 255, 0.7)" variant="body2">
+                        Wager: ${game.wager.toFixed(2)} | Winner: {getPlayerNameById(game.winnerId)} | {new Date(game.date).toLocaleString()}
+                      </Typography>
+                    }
                   />
                 </ListItem>
               </Box>
             ))}
           </List>
-        </Paper>
+        </StyledCard>
       )}
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-        <Button variant="outlined" onClick={onBack}>
+        <StyledButton variant="outlined" onClick={onBack} color="secondary">
           Back to Setup
-        </Button>
-        <Button 
+        </StyledButton>
+        <StyledButton 
           variant="contained" 
           onClick={onContinue} 
           disabled={games.length === 0}
         >
           View Summary
-        </Button>
+        </StyledButton>
       </Box>
     </Box>
   );
